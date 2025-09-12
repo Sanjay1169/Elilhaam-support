@@ -659,11 +659,11 @@
     async function loadAgents(filter=''){
       agentListEl.innerHTML = '';
       try{
-        const res = await apiFetch('/agents');
+        const res = await apiFetch('/agent/all');
         const data = await res.json();
         if(!(data.success && Array.isArray(data.agents))) return;
 
-        data.agents
+        data.agents	
           .filter(a => (a.username || '').toLowerCase().includes((filter||'').toLowerCase()))
           .forEach(a=>{
             const li = document.createElement('li');
