@@ -310,7 +310,6 @@
           </div>
         </div>
       </section>
-
     </main>
   </div>
 
@@ -323,7 +322,7 @@
      * Set your current ngrok (or localtunnel) URL here. Update this
      * every time the tunnel URL changes (or store it in environment).
      ********************************************************************/
-    const NGROK_URL = 'https://43c07179ae37.ngrok-free.app'; // <-- update as needed
+    const NGROK_URL = 'https://tones-compliance-toxic-sheffield.trycloudflare.com'; // <-- update as needed
     const apiBase = NGROK_URL + '/api';
 
     // Set the chat background image URL (was a localhost URL previously)
@@ -676,7 +675,6 @@
                 <div class="flex items-center justify-between gap-3">
                   <div class="truncate font-medium">${a.username}</div>
                   <div class="flex items-center gap-2">
-				  
 				      <button data-action="call" data-id="${a._id}" data-phone="${a.phone || ''}" class="opacity-80 hover:opacity-100 text-green-400">
                       <i class="fa fa-phone"></i>
                       </button>
@@ -810,13 +808,10 @@
     function pushMessage(phone, msg){
       if(!clients[phone]) clients[phone]={ phone, messages:[] };
       clients[phone].messages.push(msg);
-
       // check if user is near bottom before rendering
       const atBottom = chatWindow.scrollTop + chatWindow.clientHeight >= chatWindow.scrollHeight - 48;
-
       if(activeClient && activeClient.phone===phone) renderMessage(msg);
       if(currentMenu==='chats') renderClientList(searchClient.value);
-
       // only autoscroll if user was already at bottom
       if(atBottom){
         chatWindow.scrollTop = chatWindow.scrollHeight;
@@ -826,7 +821,6 @@
     function renderMessage(msg){
       const wrapper = document.createElement('div');
       wrapper.className = `flex ${msg.sender==='Admin' ? 'justify-end' : 'justify-start'} my-[2px]`;
-
       const bubble = document.createElement('div');
       bubble.className = `bubble ${msg.sender==='Admin' ? 'me' : 'them'} shadow`;
         let fileUrl = msg.fileUrl || '';
@@ -862,7 +856,6 @@
       const time = document.createElement('span');
       time.textContent = formatTimestamp(msg.timestamp);
       meta.appendChild(time);
-
       if(msg.sender==='Admin'){
         const ticks = document.createElement('i');
         ticks.className = 'fa-solid fa-check-double tick';
@@ -874,7 +867,7 @@
       chatWindow.appendChild(wrapper);
     }
 
-    function handleIncomingMessage(msg){
+   function handleIncomingMessage(msg){
   // { phone, message, timestamp, isFile, fileUrl }
   let fileUrl = msg.fileUrl || '';
   if(fileUrl.startsWith('http://localhost:3001')) {
@@ -886,9 +879,27 @@
     sender: 'Client',
     timestamp: msg.timestamp || new Date(),
     isFile: !!msg.isFile,
-    fileUrl: fileUrl  // <-- use the corrected URL here
+    fileUrl: fileUrl
   });
 }
+
+function pushMessage(phone, msg){
+  if(!clients[phone]) clients[phone] = { phone, messages: [] };
+  clients[phone].messages.push(msg);
+
+  const isActive = activeClient && activeClient.phone === phone;
+  const atBottom = isActive && (chatWindow.scrollTop + chatWindow.clientHeight >= chatWindow.scrollHeight - 48);
+
+  // Render only if this is the active chat
+  if(isActive) renderMessage(msg);
+
+  // Refresh client list preview
+  if(currentMenu === 'chats') renderClientList(searchClient.value);
+
+  // Auto-scroll only if user was near bottom
+  if(atBottom) chatWindow.scrollTop = chatWindow.scrollHeight;
+}
+
 
   </script>
 </body>
