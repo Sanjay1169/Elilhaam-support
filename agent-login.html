@@ -799,7 +799,7 @@
             sender: c.senderRole === 'admin' ? 'Admin' : 'Client',
             timestamp: c.timestamp || c.createdAt || new Date(),
             isFile: !!c.isFile,
-            fileUrl: c.fileUrl || ''
+           fileUrl: c.fileUrl ? c.fileUrl.replace('http://localhost:3001', NGROK_URL) : ''
           }));
           activeClient.messages.forEach(m => renderMessage(m));
           chatWindow.scrollTop = chatWindow.scrollHeight;
@@ -829,7 +829,10 @@
 
       const bubble = document.createElement('div');
       bubble.className = `bubble ${msg.sender==='Admin' ? 'me' : 'them'} shadow`;
-
+        let fileUrl = msg.fileUrl || '';
+  if(fileUrl.startsWith('http://localhost:3001')){
+    fileUrl = fileUrl.replace('http://localhost:3001', NGROK_URL);
+  }
       if(msg.isFile){
         if(msg.fileUrl.match(/\.(jpeg|jpg|gif|png|webp)$/i)){
           const img = document.createElement('img');
@@ -872,15 +875,21 @@
     }
 
     function handleIncomingMessage(msg){
-      // { phone, message, timestamp, isFile, fileUrl }
-      pushMessage(msg.phone, {
-        text: msg.message || '',
-        sender: 'Client',
-        timestamp: msg.timestamp || new Date(),
-        isFile: !!msg.isFile,
-        fileUrl: msg.fileUrl || ''
-      });
-    }
+  // { phone, message, timestamp, isFile, fileUrl }
+  let fileUrl = msg.fileUrl || '';
+  if(fileUrl.startsWith('http://localhost:3001')) {
+    fileUrl = fileUrl.replace('http://localhost:3001', NGROK_URL);
+  }
+
+  pushMessage(msg.phone, {
+    text: msg.message || '',
+    sender: 'Client',
+    timestamp: msg.timestamp || new Date(),
+    isFile: !!msg.isFile,
+    fileUrl: fileUrl  // <-- use the corrected URL here
+  });
+}
+
   </script>
 </body>
 </html>
