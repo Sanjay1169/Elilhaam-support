@@ -578,7 +578,7 @@ chatForm.addEventListener("submit", async (e) => {
   if (!text) return;
 
   try {
-    const res = await apiFetch("/api/admin/send-message", {
+    const res = await apiFetch("/admin/send-message", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
